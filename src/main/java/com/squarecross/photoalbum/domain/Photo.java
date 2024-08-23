@@ -1,32 +1,29 @@
 package com.squarecross.photoalbum.domain;
 
 import jakarta.persistence.*;
-import jakarta.persistence.UniqueConstraint;
 import org.hibernate.annotations.CreationTimestamp;
 import java.util.Date;
-
 @Entity
-@Table(name="photo", schema = "photo_album",uniqueConstraints = {@UniqueConstraint(columnNames="album_id")})
+@Table(name="photo", schema="photo_album", uniqueConstraints = {@UniqueConstraint(columnNames = "photo_id")})
 public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "photo_id", unique = true, nullable = false)
+    private Long photoId;
 
-    @Column(name = "photo_id",unique = true,nullable = false)
-    private  Long photoId;
-
-    @Column(name="file_name",unique = true,nullable = true)
+    @Column(name = "file_name", unique = false, nullable = true)
     private String fileName;
 
-    @Column(name = "thumb_url",unique = true,nullable = true)
-    private String thumbUrl;
-
-    @Column(name = "original_url",unique = true,nullable = true)
-    private String originalUrl;
-
-    @Column(name = "file_size",unique = true,nullable = true)
+    @Column(name = "file_size", unique = false, nullable = true)
     private int fileSize;
 
-    @Column(name = "uploaded_at",unique = true,nullable = true)
+    @Column(name="original_url", unique = false, nullable = true)
+    private String originalUrl;
+
+    @Column(name="thumb_url", unique = false, nullable = true)
+    private String thumbUrl;
+
+    @Column(name="uploaded_at", unique = false, nullable = true)
     @CreationTimestamp
     private Date uploadedAt;
 
@@ -52,12 +49,12 @@ public class Photo {
         this.fileName = fileName;
     }
 
-    public String getThumbUrl() {
-        return thumbUrl;
+    public int getFileSize() {
+        return fileSize;
     }
 
-    public void setThumbUrl(String thumbUrl) {
-        this.thumbUrl = thumbUrl;
+    public void setFileSize(int fileSize) {
+        this.fileSize = fileSize;
     }
 
     public String getOriginalUrl() {
@@ -68,12 +65,12 @@ public class Photo {
         this.originalUrl = originalUrl;
     }
 
-    public int getFileSize() {
-        return fileSize;
+    public String getThumbUrl() {
+        return thumbUrl;
     }
 
-    public void setFileSize(int fileSize) {
-        this.fileSize = fileSize;
+    public void setThumbUrl(String thumbUrl) {
+        this.thumbUrl = thumbUrl;
     }
 
     public Date getUploadedAt() {
@@ -91,4 +88,5 @@ public class Photo {
     public void setAlbum(Album album) {
         this.album = album;
     }
+
 }
