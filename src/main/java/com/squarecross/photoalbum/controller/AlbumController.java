@@ -1,28 +1,50 @@
 package com.squarecross.photoalbum.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestMapping; //url경로의 앞부분을 나타냄 https://<url>albums
-import org.springframework.web.bind.annotation.RestController; //해당 클래스가 controller라는것을 나타내고 restapi목적으로 사용할것임을 나타냄
-
-import org.springframework.web.bind.annotation.RequestMethod; //url경로와 http메서드 정의용
-
+import org.springframework.web.bind.annotation.*;
 import com.squarecross.photoalbum.dto.AlbumDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import com.squarecross.photoalbum.service.AlbumService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/albums")
 public class AlbumController {
+
     @Autowired
     AlbumService albumService;
-    @RequestMapping(value = "/{albumId}",method = RequestMethod.GET)
-    public ResponseEntity<AlbumDto> getAlbum(@PathVariable("albumId")final long albumId){ //메서드 입출력 정의
+
+    // Path Variable을 사용하는 메서드 http://localhost:8080/albums/1
+    @RequestMapping(value = "/{albumId}", method = RequestMethod.GET)
+    public ResponseEntity<AlbumDto> getAlbumByPath(@PathVariable("albumId") final long albumId) {
         AlbumDto album = albumService.getAlbum(albumId);
         return new ResponseEntity<>(album, HttpStatus.OK);
+    }
+
+    // Query String을 사용하는 메서드 http://localhost:8080/albums?albumId=2
+    @RequestMapping(method = RequestMethod.GET)  // @GetMapping사용가능
+    public ResponseEntity<AlbumDto> getAlbumByQuery(@RequestParam("albumId") final long albumId) {
+        AlbumDto album = albumService.getAlbum(albumId);
+        return new ResponseEntity<>(album, HttpStatus.OK);
+    }
+
+    // JSON body를 사용하는 메서드 (albumId만 받음) http://localhost:8080/albums body클릭후 json
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<AlbumDto> getAlbumByJson(@RequestBody AlbumIdRequest request) {
+        AlbumDto album = albumService.getAlbum(request.getAlbumId());
+        return new ResponseEntity<>(album, HttpStatus.OK);
+    }
+}
+
+// JSON 요청을 위한 간단한 클래스
+class AlbumIdRequest {
+    private long albumId;
+
+    public long getAlbumId() {
+        return albumId;
+    }
+
+    public void setAlbumId(long albumId) {
+        this.albumId = albumId;
     }
 }
