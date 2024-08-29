@@ -8,6 +8,7 @@ import com.squarecross.photoalbum.service.AlbumService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/albums")
@@ -34,10 +35,25 @@ public class AlbumController {
 //    public ResponseEntity<AlbumDto> getAlbumByJson(@RequestBody AlbumIdRequest request) {
 //        AlbumDto album = albumService.getAlbum(request.getAlbumId());
 //        return new ResponseEntity<>(album, HttpStatus.OK);//   }
-    @RequestMapping(value = "",method = RequestMethod.POST) //url /httpl 메서드
+    @RequestMapping(value = "", method = RequestMethod.POST) //url /httpl 메서드
     public ResponseEntity<AlbumDto> createAlbum(@RequestBody final AlbumDto albumDto) throws IOException {  //입출력
         AlbumDto saveAlbumDto = albumService.createAlbum(albumDto);
-        return new ResponseEntity<>(saveAlbumDto,HttpStatus.OK);
+        return new ResponseEntity<>(saveAlbumDto, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<List<AlbumDto>>
+    getAlbumList(@RequestParam(value = "keyword", required = false, defaultValue = "") final String keyword,
+                 @RequestParam(value = "sort", required = false, defaultValue = "byDate") final String sort) {
+        List<AlbumDto> albumDtos = albumService.getAlbumList(keyword, sort);
+        return new ResponseEntity<>(albumDtos, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/{albumId}", method = RequestMethod.PUT)
+    public ResponseEntity<AlbumDto> updateAlbum(@PathVariable("albumId") final long albumId,
+                                                @RequestBody final AlbumDto albumDto){
+        AlbumDto res = albumService.changeName(albumId,albumDto);
+        return new ResponseEntity<>(res,HttpStatus.OK);
     }
 }
 
