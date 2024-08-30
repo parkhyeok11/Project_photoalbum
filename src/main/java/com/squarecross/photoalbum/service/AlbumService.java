@@ -79,4 +79,40 @@ public class AlbumService {
         Album savedAlbum = this.albumRepository.save(updateAlbum);
         return  AlbumMapper.convertToDto(savedAlbum);
     }
+
+    public void deleteAlbum(Long albumId) throws IOException {
+        Optional<Album> album = this.albumRepository.findById(albumId);
+        if (album.isEmpty()) {
+            throw new NoSuchElementException(String.format("Album ID '%d'가 존재하지 않습니다", albumId));
+        }
+        Album deletedAlbum = album.get();
+
+        // 앨범에 속한 모든 사진 삭제
+        List<Photo> photos = photoRepository.findByAlbum_AlbumId(albumId);
+        photoRepository.deleteAll(photos);
+
+        // 데이터베이스에서 앨범 삭제
+        this.albumRepository.delete(deletedAlbum);
+
+        // 파일 시스템에서 앨범 디렉토리 삭제
+        deleteAlbumDirectories(deletedAlbum);
+    }
+
+    private void deleteAlbumDirectories(Album album) throws IOException {
+        String originalPath = Constants.PATH_PREFIX + "/photos/original/" + album.getAlbumId();
+        String thumbPath = Constants.PATH_PREFIX + "/photos/thumb/" + album.getAlbumId();
+
+        deleteDirectory(originalPath);
+        deleteDirectory(thumbPath);
+    }
+
+    private void deleteDirectory(String path) throws IOException {
+        java.nio.file.Path directoryPath = Paths.get(path);
+        if (Files.exists(directoryPath)) {
+            Files.walk(directoryPath)
+                    .sorted(java.util.Comparator.reverseOrder())
+                    .map(java.nio.file.Path::toFile)
+                    .forEach(java.io.File::delete);
+        }
+    }
 }

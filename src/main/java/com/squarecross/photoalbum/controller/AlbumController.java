@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/albums")
@@ -57,6 +58,18 @@ public class AlbumController {
                                                 @RequestBody final AlbumDto albumDto){
         AlbumDto res = albumService.changeName(albumId,albumDto);
         return new ResponseEntity<>(res,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{albumId}")
+    public ResponseEntity<Void> deleteAlbum(@PathVariable("albumId") final long albumId) {
+        try {
+            albumService.deleteAlbum(albumId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
 
