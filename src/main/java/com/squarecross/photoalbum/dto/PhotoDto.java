@@ -1,6 +1,7 @@
 package com.squarecross.photoalbum.dto;
 
 import java.util.Date;
+import java.util.List;
 
 public class PhotoDto {
     private Long photoId;

@@ -7,16 +7,13 @@ import org.imgscalr.Scalr;
 import org.springframework.stereotype.Service;
 import com.squarecross.photoalbum.repository.AlbumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.squarecross.photoalbum.dto.AlbumDto;
 import com.squarecross.photoalbum.dto.PhotoDto;
-import com.squarecross.photoalbum.mapper.AlbumMapper;
 import com.squarecross.photoalbum.mapper.PhotoMapper;
 import com.squarecross.photoalbum.repository.PhotoRepository;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.List;
@@ -49,6 +46,20 @@ public class PhotoService {
         } else {
             throw new EntityNotFoundException(String.format("포토 아이디 %d로 조회되지 않았습니다", photoId)); //없을시 에러 throw
         }
+    }
+    public List<PhotoDto> getPhotoList(Long albumId) {
+        List<Photo> photos;
+        if (albumId != null) {
+            if (!albumRepository.existsById(albumId)) {
+                throw new EntityNotFoundException(String.format("앨범 아이디 %d로 조회되지 않았습니다", albumId));
+            }
+            photos = photoRepository.findByAlbum_AlbumId(albumId);
+        } else {
+            photos = photoRepository.findAll();
+        }
+        return photos.stream()
+                .map(PhotoMapper::convertToDto)
+                .collect(Collectors.toList());
     }
 
     public PhotoDto savePhoto(MultipartFile file, Long albumId){
@@ -138,4 +149,5 @@ public class PhotoService {
         }
         return new File(Constants.PATH_PREFIX + res.get().getOriginalUrl());
     }
+
 }

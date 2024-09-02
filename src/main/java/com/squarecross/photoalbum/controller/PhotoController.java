@@ -1,5 +1,6 @@
 package com.squarecross.photoalbum.controller;
 
+import com.squarecross.photoalbum.dto.AlbumDto;
 import com.squarecross.photoalbum.dto.PhotoDto;
 import com.squarecross.photoalbum.service.PhotoService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,6 +26,12 @@ public class PhotoController {
     public ResponseEntity<PhotoDto> getPhotoInfo(@PathVariable("photoId") final long photoId){
         PhotoDto photoDto = photoService.getPhoto(photoId);
         return new ResponseEntity<>(photoDto, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<List<PhotoDto>> getPhotoList(@PathVariable("albumId") final long albumId) {
+        List<PhotoDto> photos = photoService.getPhotoList(albumId);
+        return new ResponseEntity<>(photos, HttpStatus.OK);
     }
 
     @RequestMapping(value="",method = RequestMethod.POST)
