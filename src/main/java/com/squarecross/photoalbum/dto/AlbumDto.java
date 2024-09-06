@@ -1,21 +1,15 @@
 package com.squarecross.photoalbum.dto;
+
 import java.util.List;
 import java.util.Date;
+
 public class AlbumDto {
-    Long albumId;
-    String albumName;
-    Date createdAt;
-    int count;
-
-    public List<String> getThumbUrls() {
-        return thumbUrls;
-    }
-
-    public void setThumbUrls(List<String> thumbUrls) {
-        this.thumbUrls = thumbUrls;
-    }
-
+    private Long albumId;
+    private String albumName;
+    private Date createdAt;
+    private int count;
     private List<String> thumbUrls;
+    private String userId;  // 새로 추가된 필드
 
     public Long getAlbumId() {
         return albumId;
@@ -47,5 +41,22 @@ public class AlbumDto {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public List<String> getThumbUrls() {
+        return thumbUrls;
+    }
+
+    public void setThumbUrls(List<String> thumbUrls) {
+        this.thumbUrls = thumbUrls;
+    }
+
+    // 새로 추가된 userId의 getter와 setter
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
