@@ -14,18 +14,21 @@ public class User {
     @Column(name = "user_id", unique = true, nullable = false)
     private String userId;  // Changed to String, removed @GeneratedValue
 
-    @Column(name = "user_name", unique = false, nullable = false)
+    @Column(name = "user_name", unique = false, nullable = true)
     private String userName;
 
     @Column(name = "password", unique = false, nullable = false)
     private String password;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", unique = true, nullable = true)
     private String email;
 
     @Column(name = "created_at", unique = false, nullable = true)
     @CreationTimestamp
     private Date createdAt;
+
+    @Column(name = "user_number", unique = false,nullable = true)
+    private Long userNumber;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private List<Album> albums;
@@ -80,5 +83,13 @@ public class User {
 
     public void setAlbums(List<Album> albums) {
         this.albums = albums;
+    }
+
+    public Long getUserNumber() {
+        return userNumber;
+    }
+
+    public void setUserNumber(Long userNumber) {
+        this.userNumber = userNumber;
     }
 }

@@ -6,6 +6,7 @@ import com.squarecross.photoalbum.dto.UserDto;
 import com.squarecross.photoalbum.domain.User;
 import com.squarecross.photoalbum.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.squarecross.photoalbum.mapper.UserMapper.convertToDto;
 
@@ -20,5 +21,32 @@ public class UserService {
             return convertToDto(user);
         }
         return null;
+    }
+
+    @Transactional
+    public UserDto signup(String userId, String password) {
+        // 중복체크
+        if (userRepository.findByUserId(userId) != null) {
+            throw new IllegalArgumentException("User ID already exists");
+        }
+
+        User newUser = new User();
+        newUser.setUserId(userId);
+        newUser.setPassword(password);
+
+        // 넘버생성
+        Long userNumber = generateUserNumber();
+        newUser.setUserNumber(userNumber);
+
+        // db에 저장
+        User savedUser = userRepository.save(newUser);
+
+        return convertToDto(savedUser);
+    }
+
+    private Long generateUserNumber() {
+        // This is a simple implementation. You might want to use a more sophisticated method
+        // to generate unique user numbers, especially in a multi-threaded environment.
+        return userRepository.count() + 1;
     }
 }

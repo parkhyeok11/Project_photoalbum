@@ -1,23 +1,16 @@
 package com.squarecross.photoalbum.controller;
 
-import com.squarecross.photoalbum.dto.AlbumDto;
-import com.squarecross.photoalbum.dto.PhotoDto;
 import com.squarecross.photoalbum.dto.UserDto;
-import com.squarecross.photoalbum.service.PhotoService;
 import com.squarecross.photoalbum.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
     @Autowired
     UserService userService;
 
@@ -30,6 +23,21 @@ public class UserController {
             return ResponseEntity.ok(authenticatedUser);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestBody UserDto signupRequest) {
+        try {
+            UserDto createdUser = userService.signup(signupRequest.getUserId(), signupRequest.getPassword());
+            // 비밀번호 정보는 응답에서 제거
+            createdUser.setPassword(null);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        } catch (IllegalArgumentException e) {
+            // 아이디 중복
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during signup");
         }
     }
 }
