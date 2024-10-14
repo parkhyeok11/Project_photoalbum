@@ -45,8 +45,6 @@ public class UserService {
     }
 
     private Long generateUserNumber() {
-        // This is a simple implementation. You might want to use a more sophisticated method
-        // to generate unique user numbers, especially in a multi-threaded environment.
         return userRepository.count() + 1;
     }
 }

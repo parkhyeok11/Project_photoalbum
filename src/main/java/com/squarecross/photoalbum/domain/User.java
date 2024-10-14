@@ -33,7 +33,7 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private List<Album> albums;
 
-    public User() {}
+    public User() {};
 
     // Getters and setters
 
